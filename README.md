@@ -2,6 +2,14 @@
 
 * エクセルファイルを CSV に変換する
 
+# How to use
+
+```
+$ git clone https://github.com/d-chiba/excel-exporter.git
+$ cp excel-exporter/bin/excel-exporter-mac /PATH/TO/EXECUTABLE/excel-exporter
+$ excel-exporter EXCEL_FILE > CSV_FILE
+```
+
 # Install
 
 ```
