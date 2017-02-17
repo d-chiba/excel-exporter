@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "tl/iOWUYwjMb3roUVOmbFwyQO5k=",
+			"path": "github.com/tealeg/xlsx",
+			"revision": "e0f3d7d6cf84b282edb711bc6a23e8dbbd331a13",
+			"revisionTime": "2016-12-21T20:26:27Z"
+		}
+	],
+	"rootPath": "github.com/d-chiba/excel-exporter"
+}
