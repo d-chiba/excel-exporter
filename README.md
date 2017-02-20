@@ -5,9 +5,15 @@
 # How to use
 
 ```
+# download
 $ git clone https://github.com/d-chiba/excel-exporter.git
 $ cp excel-exporter/bin/excel-exporter-mac /PATH/TO/EXECUTABLE/excel-exporter
-$ excel-exporter EXCEL_FILE > CSV_FILE
+
+# create config file
+$ echo -e 'InputDir = "/path/to/input"\nOutputDir = "/path/to/output"' > ~/.excel-exporter.toml
+
+# execute
+$ excel-exporter EXCEL_FILE
 ```
 
 # Install
