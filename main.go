@@ -8,10 +8,18 @@ import (
 	"os"
 	"strings"
 
+	"github.com/mitchellh/go-homedir"
+	"github.com/naoina/toml"
 	"github.com/tealeg/xlsx"
 )
 
+type config struct {
+	InputDir  string
+	OutputDir string
+}
+
 var (
+	configName = flag.String("c", "", "設定ファイル名(default: ~/.excel-exporter.toml)")
 	sheetNames = flag.String("s", "", "カンマ区切りのシート名")
 )
 
@@ -20,6 +28,9 @@ func usage() {
 	fmt.Printf("\texcel-exporter [Flags] FILE.xlsx\n")
 	fmt.Printf("Output:\n")
 	fmt.Printf("\tSheetName.txt[, SheetName2.txt]\n")
+	fmt.Printf("Config file Example:\n")
+	fmt.Printf("\tInputDir  = \"/Path/To/Excel/Dir/\"\n")
+	fmt.Printf("\tOutputDir = \"/Path/To/Csv/Dir/\"\n")
 	fmt.Printf("Flags:\n")
 	flag.PrintDefaults()
 }
@@ -32,10 +43,37 @@ func main() {
 		usage()
 		os.Exit(2)
 	}
-	run(excelFileName, strings.Split(*sheetNames, ","))
+	c := parseConfig(*configName)
+	run(c, excelFileName, strings.Split(*sheetNames, ","))
 }
-func run(excelFileName string, sheets []string) {
-	xlFile, err := xlsx.OpenFile(excelFileName)
+
+func parseConfig(name string) config {
+	if name == "" {
+		home, e := homedir.Dir()
+		if e != nil {
+			panic(e)
+		}
+		name = home + "/.excel-exporter.toml"
+	}
+
+	f, err := os.Open(name)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	buf, err := ioutil.ReadAll(f)
+	if err != nil {
+		panic(err)
+	}
+	var c config
+	if err := toml.Unmarshal(buf, &c); err != nil {
+		panic(err)
+	}
+	return c
+}
+
+func run(c config, excelFileName string, sheets []string) {
+	xlFile, err := xlsx.OpenFile(c.InputDir + "/" + excelFileName)
 	if err != nil {
 		panic(err)
 	}
@@ -53,7 +91,7 @@ func run(excelFileName string, sheets []string) {
 					panic(err)
 				}
 			}
-			err := ioutil.WriteFile(sheet.Name+".txt", b.Bytes(), 0644)
+			err := ioutil.WriteFile(c.OutputDir+"/"+sheet.Name+".txt", b.Bytes(), 0644)
 			if err != nil {
 				panic(err)
 			}
