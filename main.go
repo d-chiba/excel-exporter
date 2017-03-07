@@ -80,6 +80,10 @@ func run(c config, excelFileName string, sheets []string) {
 	for _, sheet := range xlFile.Sheets {
 		if contains(sheets, sheet.Name) {
 			b := new(bytes.Buffer)
+			_, err := b.WriteString("\ufeff")
+			if err != nil {
+				panic(err)
+			}
 			for _, row := range sheet.Rows {
 				list := []string{}
 				for _, cell := range row.Cells {
@@ -91,7 +95,7 @@ func run(c config, excelFileName string, sheets []string) {
 					panic(err)
 				}
 			}
-			err := ioutil.WriteFile(c.OutputDir+"/"+sheet.Name+".txt", b.Bytes(), 0644)
+			err = ioutil.WriteFile(c.OutputDir+"/"+sheet.Name+".txt", b.Bytes(), 0644)
 			if err != nil {
 				panic(err)
 			}
